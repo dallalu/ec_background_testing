@@ -21,7 +21,7 @@ define(
 					"rows" : 256,
 					"cols" : 256,
 					"dpi" : 96,
-					"format" : (format && format == "jpg") ? "image/jpg" : "image/png",
+					"format" : (this.format && this.format == "jpg") ? "image/jpg" : "image/png",
 					"compressionQuality" : 90.0,
 					"origin" : {
 						"x" : -2.0037508342787E7,

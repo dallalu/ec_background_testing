@@ -65,6 +65,9 @@ define(
 					var value = this[this.selectedIndex].id;
 					
 					self.hideBasemap(self.currentBasemapName);
+					
+					self.checkVisibilityAtCurrentLevelForLayer(value);
+					
 					self.showBasemap(value);
 					
 					self.currentBasemapName = value;
@@ -114,6 +117,36 @@ define(
 			this.showBasemap = function(layerName)
 			{
 				esribelux.map.getLayer(layerName).show();
+			}
+			
+			/**
+			* Check if there is data visible at this level for the current layer. 
+			* Otherwise, it displays the no data message.
+			*/
+			this.checkVisibilityAtCurrentLevelForLayer = function(basemapName)
+			{
+				var currentBasemap = "";
+				for(var i = 0; i < esribelux.properties.layers.basemap.length; i++)
+				{
+					var basemap = esribelux.properties.layers.basemap[i];
+					if(basemap.name == basemapName)
+					{
+						currentBasemap = basemap;
+						break;
+					}
+				}
+						
+				var minZoomLevel = currentBasemap.minZoomLevel;
+				var maxZoomLevel = currentBasemap.maxZoomLevel;
+				var currentLevel = esribelux.map.getLevel();
+						
+				if(minZoomLevel != "undefined" && maxZoomLevel)
+				{
+					if(currentLevel > maxZoomLevel || currentLevel < minZoomLevel)
+						document.getElementById("nodatamsg").style.display = "block";
+					else
+					document.getElementById("nodatamsg").style.display = "none";
+				}	
 			}
 		}
 		

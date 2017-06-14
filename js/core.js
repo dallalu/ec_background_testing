@@ -32,7 +32,7 @@ define(
 						// ================
 						if( esribelux.properties.layers.basemap )
 						{
-							//esribelux.basemapCurrentName = esribelux.properties.initialBasemapName;
+							esribelux.basemapCurrentName = esribelux.properties.initialBasemapName;
 							for( var i = 0; i < esribelux.properties.layers.basemap.length; i++)
 							{
 								var l = esribelux.properties.layers.basemap[i];
@@ -60,6 +60,8 @@ define(
 								else if( l.type == 'wmts' )
 								{
 									var layer = new customWMTS(url, props['id'], new esri.SpatialReference(esribelux.properties.initialExtent[4]), props['format']);
+									layer.maxScale = props['maxScale'];
+									layer.minScale = props['minScale'];
 									layer.visible = (props['visible']) ? true : false;
 									layers.push(layer);
 								}
@@ -186,57 +188,38 @@ define(
 						esribelux.map.setExtent(extent);
 					}
 					
+					on(esribelux.map, "zoom-end", function(event)
+					{
+						var currentBasemap = "";
+						for(var i = 0; i < esribelux.properties.layers.basemap.length; i++)
+						{
+							var basemap = esribelux.properties.layers.basemap[i];
+							if(basemap.name == esribelux.basemapCurrentName)
+							{
+								currentBasemap = basemap;
+								break;
+							}
+						}
+						
+						var minZoomLevel = currentBasemap.minZoomLevel;
+						var maxZoomLevel = currentBasemap.maxZoomLevel;
+						var currentLevel = event.level;
+						
+						if(minZoomLevel != "undefined" && maxZoomLevel)
+						{
+							if(currentLevel > maxZoomLevel || currentLevel < minZoomLevel)
+								document.getElementById("nodatamsg").style.display = "block";
+							else
+								document.getElementById("nodatamsg").style.display = "none";
+						}
+					});
+					
 					require(['js/basemapList','js/scale'],  
 					function(basemapList, scale)
 					{
 						basemapList.initialize();
 						scale.initialize();
 					});
-					
-					/*require(['js/projectTitle', 'js/widget/scale','js/widget/scalebar', 'js/widget/menu', 'js/widget/tocLegend', 'js/widget/tocTool', 'js/widget/legendTool', 'js/dialog', 
-							 'js/widget/copyright', 'js/widget/searchProjectCodes', 'js/widget/basemapList','js/widget/loadProjectData', 'js/widget/zoomToProject', 'js/widget/measureTool', 'js/widget/latLongTool',
-							 'js/widget/geocoderTool','js/widget/infoWindows', 'js/widget/attributeTable', 'js/widget/proposals', 'js/widget/projects'], 
-					function(projectTitle, scale, scalebar, menu, tocLegend, tocTool, legendTool, dialog, copyright, searchProjectCodes, basemapList, loadProjectData, zoomToProject, measureTool, latLongTool, geocoderTool, infoWindows, attributesTableTool, proposalsTool, projectsTool) 
-					{
-						if(esribelux.properties.projectData.enableWidget) loadProjectData.initialize();
-						if(esribelux.properties.scale.enableWidget) scale.initialize();
-						if(esribelux.properties.scalebar.enableWidget) scalebar.initialize();						
-						if(esribelux.properties.basemapList.enableWidget) basemapList.initialize();
-						if(esribelux.properties.copyright.enableWidget) copyright.initialize();
-						
-						if(esribelux.properties.menu.enableWidget)
-						{
-							menu.initialize();
-							 
-							if(esribelux.properties.measure.enableWidget) measureTool.initialize();
-							if(esribelux.properties.searchProjectCodes.enableWidget) searchProjectCodes.initialize();
-							if(esribelux.properties.zoomToProject.enableWidget) zoomToProject.initialize();
-							if(esribelux.properties.latLong.enableWidget) latLongTool.initialize();			
-							if(esribelux.properties.geocoder.enableWidget) geocoderTool.initialize();
-							if(esribelux.properties.attributesTable.enableWidget) attributesTableTool.initialize();
-							
-							if(esribelux.properties.projects.enableWidget) projectsTool.initialize();
-							if(esribelux.properties.proposals.enableWidget) proposalsTool.initialize();
-							
-							if(esribelux.properties.tocLegend.enableWidget) 
-							{
-								tocLegend.initialize();
-								tocTool.initialize();
-								legendTool.initialize();
-							}
-						}
-						
-						infoWindows.initialize();
-						
-						esribelux.map.resize();
-						esribelux.map.reposition();
-
-						if( window.parent && window.parent.show )
-							window.parent.show();
-							
-						dialog.initialize();
-						if(esribelux.properties.title.enableWidget) projectTitle.initialize();
-					});*/
 				}
 				catch(e) { esribelux.catchAll(e); }
 			}
@@ -247,4 +230,3 @@ define(
 		return instance; 
 	}
 );
-

@@ -4,33 +4,11 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-		<title>GIS Viewer</title>
-		<link rel="shortcut icon" href="images/shortcut.png">
-		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
-		<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-		
-		<style> 
-			html, body
-			{
-			  padding: 0;
-			  margin: 0;
-			  height: 100%;
-			  width:100%;
-			  font-family: 'Dosis', sans-serif;
-			  color:black;
-			}
-			
-			#map {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				z-index: 100;
-			}
-		</style>
+		<title>Backgrounds Viewer</title>
 	</head>
 	<body class="claro">		
 		<div id="map">
+		<center><div id="nodatamsg">No data available at this scale</div></center>
 		</div>
 		<script type="text/javascript">var esribelux = {map: null, properties: {}};</script>
 		<script type="text/javascript" src="js/loader.js"></script>
